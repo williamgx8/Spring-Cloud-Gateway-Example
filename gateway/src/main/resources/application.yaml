@@ -1,0 +1,21 @@
+server:
+  port: 9090
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: middle-community-rest-userinfo-get
+          uri: http://localhost:8080 # 当访问spring-cloud-gateway uri + predicates中的路径时会转发到这个uri + predicates中的路径
+          predicates:
+            - Method=GET  #老恶心了，这里所有的key=value中间不能有空格，否则报错
+            - Path=/userinfo,/userinfo/search,/userinfo/batch
+        - id: middle-community-rest-userinfo-post
+          uri: http://localhost:8080
+          predicates:
+            - Method=POST
+            - Path=/userinfo
+logging:
+  config: classpath:logback.xml
+  level:
+    org.springframework.cloud.gateway: debug
+    com.xiaomi.gateway: info
