@@ -1,21 +1,43 @@
 server:
   port: 9090
-spring:
-  cloud:
-    gateway:
-      routes:
-        - id: middle-community-rest-userinfo-get
-          uri: http://localhost:8080 # 当访问spring-cloud-gateway uri + predicates中的路径时会转发到这个uri + predicates中的路径
-          predicates:
-            - Method=GET  #老恶心了，这里所有的key=value中间不能有空格，否则报错
-            - Path=/userinfo,/userinfo/search,/userinfo/batch
-        - id: middle-community-rest-userinfo-post
-          uri: http://localhost:8080
-          predicates:
-            - Method=POST
-            - Path=/userinfo
 logging:
   config: classpath:logback.xml
   level:
     org.springframework.cloud.gateway: debug
     com.xiaomi.gateway: info
+#---------------单纯的配置yaml格式的路由-------------------
+#spring:
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: middle-community-rest-userinfo-get
+#          #          uri: http://localhost:8080 # 当访问spring-cloud-gateway uri + predicates中的路径时会转发到这个uri + predicates中的路径
+#          uri: http://staging-middle-community.inf.miui.srv
+#          predicates:
+#            - Method=GET  #老恶心了，这里所有的key=value中间不能有空格，否则报错
+#            - Path=/userinfo,/userinfo/search,/userinfo/batch
+#        - id: middle-community-rest-userinfo-post
+#          uri: http://staging-middle-community.inf.miui.srv
+#          predicates:
+#            - Method=POST
+#            - Path=/userinfo
+#----------------使用nacos discovery 将producer服务和gateway都注册到nacos---------------------------
+spring:
+  application:
+    name: spring-cloud-gateway
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        server-addr: localhost:8848    # nacos服务器的地址
+    gateway:
+      routes:
+        - id: nacos-route #这条predications的id
+          uri: lb://middle-community-rest # lb表示负载均衡 middle-community-rest表示producer在nacos注册的服务id
+          predicates:
+            - Path=/**
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
