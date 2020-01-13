@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: 9095
 logging:
   config: classpath:logback.xml
   level:
@@ -30,6 +30,8 @@ spring:
       discovery:
         enabled: true
         server-addr: localhost:8848    # nacos服务器的地址
+        namespace: 4b9f96c5-ff53-44ba-9151-8bbf45150060
+        cluster-name: newstaging
     gateway:
       routes:
         - id: nacos-route #这条predications的id
