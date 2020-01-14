@@ -1,0 +1,34 @@
+server:
+  port: 9096
+spring:
+  cloud:
+    gateway:
+      #      显式的配置动态路由 uri 为要路由到的服务在eureka server上注册的 spring.application.name
+      #      routes:
+      #        - id: middle-community-rest
+      #          uri: lb://middle-community-rest
+      #          predicates:
+      #            - Path=/**
+      # spring cloud 的全家桶支持的自动配置动态路由，默认在请求路径中加上 spring.application.name 中缀
+      discovery:
+        locator:
+          enabled: true   # 开启动态路由配置
+          lower-case-service-id: true # 默认eureka server上的名称都是大写，开启支持小写
+  application:
+    name: spring-cloud-gateway-eureka
+
+
+logging:
+  org.springframework.cloud.gateway: debug
+  com.xiaomi.gateway: info
+  config: classpath:logback.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9090/eureka,http://localhost:9091/eureka,http://localhost:9092/eureka

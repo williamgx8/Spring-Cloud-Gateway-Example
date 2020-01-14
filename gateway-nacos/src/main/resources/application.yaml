@@ -24,7 +24,7 @@ logging:
 #----------------使用nacos discovery 将producer服务和gateway都注册到nacos---------------------------
 spring:
   application:
-    name: spring-cloud-gateway
+    name: spring-cloud-gateway-nacos
   cloud:
     nacos:
       discovery:
